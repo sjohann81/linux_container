@@ -14,7 +14,8 @@ RUN apt-get update -y && \
     libpulse0 firefox-esr htop tar xzip gzip bzip2 zip unzip bsdmainutils \
     xterm socat git python3-pip python3-venv python3-tk \
     build-essential flex bison libgmp3-dev libmpc-dev libmpfr-dev \
-    autoconf texinfo libncurses5-dev gawk libtool zlib1g-dev && \
+    autoconf texinfo libncurses5-dev gawk libtool zlib1g-dev \
+    usbutils bash-completion dfu-util && \
     rm -rf /var/lib/apt/lists
 
 RUN mkdir source && \
@@ -34,8 +35,6 @@ RUN mkdir source && \
         --target=riscv64-unknown-elf --disable-multilib && \
     make -j2 all && \
     make install-strip && \
-    cd ../../source/gcc-14.2.0 && \
-    ./contrib/download_prerequisites && \
     cd ../../build && \
     mkdir gcc-14.2.0 && \
     cd gcc-14.2.0 && \
