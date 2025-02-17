@@ -12,7 +12,8 @@ RUN apt-get update -y && \
     xdg-utils lxterminal hsetroot tigervnc-standalone-server \
     vim geany openssh-client wget curl rsync ca-certificates apulse \
     libpulse0 firefox-esr htop tar xzip gzip bzip2 zip unzip bsdmainutils \
-    xterm socat git python3-pip python3-venv python3-tk build-essential && \
+    xterm socat git python3-pip python3-venv python3-tk build-essential \
+    bash-completion && \
     rm -rf /var/lib/apt/lists
     
 COPY --from=easy-novnc-build /bin/easy-novnc /usr/local/bin/
