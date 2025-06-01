@@ -12,10 +12,10 @@ RUN apt-get update -y && \
     xdg-utils lxterminal hsetroot tigervnc-standalone-server \
     vim geany openssh-client wget curl rsync ca-certificates apulse \
     libpulse0 firefox-esr htop tar xzip gzip bzip2 zip unzip bsdmainutils \
-    xterm socat git python3-pip python3-venv python3-tk \
-    build-essential flex bison libgmp3-dev libmpc-dev libmpfr-dev \
-    autoconf texinfo libncurses5-dev gawk libtool zlib1g-dev \
-    usbutils bash-completion dfu-util ghdl && \
+    xterm socat git python3-pip python3-venv python3-tk python3 gperf patchutils \
+    build-essential flex bison libgmp3-dev libmpc-dev libmpfr-dev bc libexpat-dev \
+    autoconf automake autotools-dev texinfo libncurses5-dev gawk libtool zlib1g-dev \
+    usbutils bash-completion dfu-util ghdl gtkwave && \
     rm -rf /var/lib/apt/lists
 
 RUN wget http://beru.univ-brest.fr/svn/CHEDDAR/releases/Cheddar-3.3-Linux-bin.tar.gz && \
@@ -25,6 +25,14 @@ RUN wget http://beru.univ-brest.fr/svn/CHEDDAR/releases/Cheddar-3.3-Linux-bin.ta
     mv Cheddar-3.3-Linux-bin /usr/local/cheddar && \
     echo 'export PATH=$PATH:/usr/local/cheddar/Cheddar-3.3-Linux-bin' >> /root/.bashrc && \
     echo 'export CHEDDAR_INSTALL_PATH=/usr/local/cheddar/Cheddar-3.3-Linux-bin/' >> /root/.bashrc
+
+RUN git clone https://github.com/qemu/qemu && \
+    cd qemu && \
+    ./configure --target-list=riscv32-softmmu,riscv64-softmmu,arm-softmmu,aarch64-softmmu && \
+    make && \
+    make install && \
+    cd ../ && \
+    rm -rf qemu
 
 RUN mkdir source && \
     mkdir build && \
