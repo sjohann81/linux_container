@@ -6,11 +6,18 @@ os exemplos apresentados aqui.
 
 ## Gerenciamento de imagens
 
-Para construir uma imagem, escolha um diretório contendo o Dockerfile
-desejado (por exemplo, em linux-bare) e execute:
+Para construir uma imagem, entre no diretório *linux_container* e 
+escolha um diretório contendo o Dockerfile desejado (por exemplo, 
+linux-bare) e execute:
 
 ```
 $ podman build -t linux-bare -f ./linux-bare/Dockerfile .
+```
+
+A imagem utilizada nas disciplinas de redes pode ser montada com o comando:
+
+```
+$ podman build -t labredes -f ./labredes/Dockerfile .
 ```
 
 Para listar imagens instaladas:
@@ -75,12 +82,48 @@ também pode ser acessada pela rede, bastando substituir *localhost* pelo
 IP da máquina executando a instância (neste caso, um servidor).
 
 Muitas vezes será necessário realizar o acesso privilegiado à recursos
-da máquina host. Por exemplo, para acesso privilegiado ao diretório */dev*,
-será necessário adicionar algumas opções:
+da máquina host. Por exemplo, para acesso com privilégios administrativos
+de rede, deve-se adicionar a opção *--privileged*:
+
+```
+$ podman run -v `pwd`:/home --privileged -p 8080:8080 labredes
+```
+
+Para acesso privilegiado a outros dispositivos (como cabos serial-USB,
+placas de desenvolvimento e outros) deve-se permitir acesso ao diretório
+*/dev*, e será necessário adicionar algumas opções:
 
 ```
 $ podman run -v `pwd`:/home -p 8080:8080 --privileged --cap-add=SYS_ADMIN -v /dev:/dev linux-bare
 ```
+
+## Rede com múltiplos containers
+
+### Criando uma rede
+
+Para colocar múltiplas instâncias em uma estrutura semelhante a uma LAN
+é necessário criar uma rede:
+
+```
+$ podman network create lab
+$ podman network ls
+```
+
+### Executando múltiplas instâncias
+
+Com uma rede criada, é necessário executar as intâncias em terminais 
+separados na máquina *host*. Isso deve ser feito para que as mesmas 
+possam ser finalizadas individualmente (com Ctrl+C).
+
+```
+$ podman run -v `pwd`:/home --privileged --network lab -p 8080:8080 labredes
+$ podman run -v `pwd`:/home --privileged --network lab -p 8081:8080 labredes
+$ podman run -v `pwd`:/home --privileged --network lab -p 8082:8080 labredes
+```
+
+Abrir um browser no *host* e acessar as URLs "localhost:8080", 
+"localhost:8081" ... para acessar cada container. Os containers estarão
+todos na mesma rede, e podem ser acessados por aplicações.
 
 
 ## Publicar uma imagem no ghcr.io
